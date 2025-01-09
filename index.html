@@ -8,8 +8,13 @@
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
+    <style>canvas#unity-canvas {
+    width: 100%!important;
+    height: 100vh!important;
+    cursor: default;
+}</style>
     <div id="unity-container" class="unity-desktop">
-      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <canvas id="unity-canvas" tabindex="-1"></canvas>
       <div id="unity-loading-bar">
         <div id="unity-logo"></div>
         <div id="unity-progress-bar-empty">
@@ -20,7 +25,6 @@
       <div id="unity-footer">
         <div id="unity-logo-title-footer"></div>
         <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">runner</div>
       </div>
     </div>
     <script>
