@@ -6,12 +6,127 @@
     <title>Unity Web Player | runner</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
+
+    <!-- Firebase SDK (Modular version) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+      import { getFirestore, doc, onSnapshot, updateDoc, increment } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAPqPvrJMC1Kd7M3aWIJKRZPBnQKwAIc_g",
+        authDomain: "pixel-a188a.firebaseapp.com",
+        databaseURL: "https://pixel-a188a-default-rtdb.europe-west1.firebasedatabase.app",
+        projectId: "pixel-a188a",
+        storageBucket: "pixel-a188a.firebasestorage.app",
+        messagingSenderId: "1051565452085",
+        appId: "1:1051565452085:web:2cf04f5f94a913a39f3a7c",
+        measurementId: "G-F1QT6Z8PTY"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      
+// Function to fetch and display real-time token balance
+      // Function to fetch and display real-time token balance
+function updateTokenBalance(username) {
+    const pxlCounter = document.getElementById("pxl-counter");
+    const userDocRef = doc(db, "users", username);
+    let lastPxlValue = null;
+
+    onSnapshot(userDocRef, (docSnapshot) => {
+        if (docSnapshot.exists()) {
+            const data = docSnapshot.data();
+            const pxlValue = data.token_balance || 0;
+
+            // Only update if the value has changed
+            if (pxlValue !== lastPxlValue) {
+                lastPxlValue = pxlValue;
+
+                // Update pxlCounter text
+                pxlCounter.innerHTML = `${pxlValue} <img src="https://i.imgur.com/xTYK9J3.png" style="width: 33px;margin-left: 5px;">`;
+
+                // Temporary color change
+                const originalColor = "#ffffff"; // Default color
+                const highlightColors = ["#ff5733", "#33ff57", "#3357ff", "#f5b041", "#9b59b6"];
+                const highlightColor = highlightColors[Math.floor(Math.random() * highlightColors.length)];
+                
+                pxlCounter.style.color = highlightColor;
+
+                // Revert back to the original color after 0.2 seconds
+                setTimeout(() => {
+                    pxlCounter.style.color = originalColor;
+                }, 200); // 200 ms
+            }
+        } else {
+            console.warn("No document found for username:", username);
+            pxlCounter.textContent = "Balance not found";
+        }
+    });
+}
+
+
+    
+
+        // Afficher le pxl-counter après 10 secondes au chargement de l'application
+ window.onload = function () {
+    const pxlCounter = document.getElementById("pxl-counter");
+    const usernameDisplay = document.createElement("p");
+    usernameDisplay.id = "username-display";
+    usernameDisplay.classList.add("username-display"); // Assign a CSS class
+    usernameDisplay.textContent = `${username}`;
+
+    // Insert the username display before pxl-counter
+    pxlCounter.parentNode.insertBefore(usernameDisplay, pxlCounter);
+
+    // Initially hide both elements
+    pxlCounter.style.visibility = "hidden";
+    pxlCounter.style.opacity = "0";
+    usernameDisplay.style.visibility = "hidden";
+    usernameDisplay.style.opacity = "0";
+
+setTimeout(() => {
+        usernameDisplay.style.visibility = "visible"; // Make username-display visible
+        usernameDisplay.style.opacity = "1"; // Trigger fade-in effect
+    }, 2000); // 10 seconds
+    // Wait 10 seconds before showing both elements
+    setTimeout(() => {
+        pxlCounter.style.visibility = "visible"; // Make pxl-counter visible
+        pxlCounter.style.opacity = "1"; // Trigger fade-in effect
+        usernameDisplay.style.visibility = "visible"; // Make username-display visible
+        usernameDisplay.style.opacity = "1"; // Trigger fade-in effect
+    }, 10000); // 10 seconds
+
+};
+</script>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
   </head>
   <body>
     <style>canvas#unity-canvas {
     width: 100%!important;
     height: 100vh!important;
     cursor: default;
+}
+#username-display {
+    position: absolute;
+    top:0px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-size: 14px;
+    font-family: monospace;
+    font-weight: bold;
+    background: rgb(255 255 255 / 0%);
+    padding: 5px 10px;
+    border-radius: 10px;
+    z-index: 1000;
+    backdrop-filter: blur(2px);
+    visibility: hidden; 
+    opacity: 0; 
+    transition: opacity 0.5s ease-in-out;
 }</style>
     <div id="unity-container" class="unity-desktop">
       <canvas id="unity-canvas" tabindex="-1"></canvas>
@@ -28,6 +143,43 @@
       </div>
     </div>
     <script>
+
+      // Initialize username globally
+let username = "Guest";
+
+// Telegram WebApp Integration
+try {
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    
+    // Check if Telegram WebApp provides user data
+    const userData = tg.initDataUnsafe?.user;
+
+    if (userData) {
+        // Check if the user has a username
+        if (userData.username) {
+            username = userData.username;
+        } else if (userData.first_name && userData.last_name) {
+            username = `${userData.first_name}_${userData.last_name}`;
+        } else if (userData.first_name) {
+            username = userData.first_name;
+        } else {
+            username = "Unknown_User";
+        }
+    }
+    console.log(`Telegram username resolved: ${username}`);
+} catch (error) {
+    console.warn("Telegram WebApp is not available:", error);
+}
+
+// Function to get Telegram username
+window.getTelegramUsername = function() {
+    return username;
+};
+
+
+
+
       var canvas = document.querySelector("#unity-canvas");
 
       // Shows a temporary message banner/ribbon for a few seconds, or
