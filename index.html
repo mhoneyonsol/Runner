@@ -40,14 +40,6 @@
         tg.setHeaderColor('#000000');
         tg.setBottomBarColor('#000000');
         
-        // Check for mobile device
-        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        // Request fullscreen on mobile
-        if (isMobileDevice) {
-          tg.requestFullscreen();
-        }
-        
         // Expand WebApp
         tg.expand();
         
