@@ -28,13 +28,41 @@
 
       // Declare unityInstance globally so it's accessible everywhere
       var unityInstance = null;
+
+      // Initialize Telegram Web App
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        
+        // Disable vertical swipes
+        tg.disableVerticalSwipes();
+        
+        // Set colors
+        tg.setHeaderColor('#000000');
+        tg.setBottomBarColor('#000000');
+        
+        // Check for mobile device
+        const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        
+        // Request fullscreen on mobile
+        if (isMobileDevice) {
+          tg.requestFullscreen();
+        }
+        
+        // Expand WebApp
+        tg.expand();
+        
+        // Handle viewport changes
+        tg.onEvent('viewport_changed', function(event) {
+          document.body.style.height = '620px';
+        });
+      }
     </script>
   </head>
   <body>
     <style>
       body {
-    margin: 0;
-}
+        margin: 0;
+      }
       canvas#unity-canvas {
         width: 100%!important;
         height: 100vh!important;
@@ -94,8 +122,7 @@
       if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
         var meta = document.createElement("meta");
         meta.name = "viewport";
-        meta.content =
-          "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
+        meta.content = "width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes";
         document.getElementsByTagName("head")[0].appendChild(meta);
         document.querySelector("#unity-container").className = "unity-mobile";
         canvas.className = "unity-mobile";
