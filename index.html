@@ -38,19 +38,6 @@
         
       }
     </script>
-    <script>
-    function SendLeaderboardData(json) {
-        if (unityInstance) {
-            unityInstance.SendMessage(
-                'LeaderboardDisplayManager', // Name of the GameObject in Unity
-                'SendLeaderboardData',      // Method to call in Unity
-                json                        // JSON data to pass
-            );
-        } else {
-            console.error("Unity instance not available!");
-        }
-    }
-</script>
   </head>
   <body>
     <style>
