@@ -66,7 +66,7 @@
         tg.disableVerticalSwipes();
       }
 
-      // Add this to handle the loading text
+      // loading text
       window.addEventListener('DOMContentLoaded', () => {
         const loadingText = document.createElement('div');
         loadingText.className = 'loading-text';
@@ -78,7 +78,7 @@
           setTimeout(() => {
             loadingText.remove();
           }, 500); // Wait for fade animation to complete
-        }, 4000);
+        }, 5000);
       });
     </script>
   </head>
@@ -89,7 +89,7 @@
       }
       canvas#unity-canvas {
         width: 100%!important;
-        height: 99vh!important;
+        height: 100vh!important;
         cursor: default;
       }
     </style>
