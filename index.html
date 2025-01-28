@@ -6,10 +6,39 @@
     <title>Runner</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
-    <!-- Add these in your index.html head section -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore-compat.js"></script>
+
+    <style>
+      .loading-text {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 20px;
+        z-index: 1000;
+        opacity: 1;
+        transition: opacity 0.5s ease;
+      }
+
+      .loading-text.fade-out {
+        opacity: 0;
+      }
+
+      @keyframes dots {
+        0%, 20% { content: "loading"; }
+        40% { content: "loading ."; }
+        60% { content: "loading . ."; }
+        80%, 100% { content: "loading . . ."; }
+      }
+
+      .loading-text::after {
+        content: "";
+        animation: dots 1.5s infinite;
+      }
+    </style>
 
     <script>
       // Initialize Firebase
@@ -35,8 +64,22 @@
         
         // Disable vertical swipes
         tg.disableVerticalSwipes();
-        
       }
+
+      // Add this to handle the loading text
+      window.addEventListener('DOMContentLoaded', () => {
+        const loadingText = document.createElement('div');
+        loadingText.className = 'loading-text';
+        document.body.appendChild(loadingText);
+
+        // Remove the loading text after 4 seconds
+        setTimeout(() => {
+          loadingText.classList.add('fade-out');
+          setTimeout(() => {
+            loadingText.remove();
+          }, 500); // Wait for fade animation to complete
+        }, 4000);
+      });
     </script>
   </head>
   <body>
